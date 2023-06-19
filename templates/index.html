@@ -391,11 +391,6 @@ input[type="radio"] {
   animation: unset;
 }
 
-.option input[type="radio"]:checked ~ i,
-.option input[type="radio"]:checked ~ .label {
-  color: #fff;
-}
-
 .option input[type="radio"]:checked ~ .label:before {
   content: "";
   position: absolute;
@@ -414,48 +409,36 @@ input[type="radio"] {
   top: -30px;
 }
 
-.option:nth-child(1) input[type="radio"]:checked ~ .label:before {
+/* .option:nth-child(1) input[type="radio"]:checked ~ .label:before {
   background-color: #49c065;
   border-radius: 4px 4px 0 0;
-}
+} */
 
 .option:nth-child(1) input[type="radio"]:checked ~ .opt-val {
   top: -31px;
 }
 
-.option:nth-child(2) input[type="radio"]:checked ~ .label:before {
+/* .option:nth-child(2) input[type="radio"]:checked ~ .label:before {
   background-color: #ec6c9d;
-}
+} */
 
 .option:nth-child(2) input[type="radio"]:checked ~ .opt-val {
   top: -71px;
 }
 
-.option:nth-child(3) input[type="radio"]:checked ~ .label:before {
+/* .option:nth-child(3) input[type="radio"]:checked ~ .label:before {
   background-color: #4f9cf4;
-}
+} */
 
 .option:nth-child(3) input[type="radio"]:checked ~ .opt-val {
   top: -111px;
 }
-
+/* 
 .option:nth-child(4) input[type="radio"]:checked ~ .label:before {
   background-color: #32c766;
-}
-
-.option:nth-child(4) input[type="radio"]:checked ~ .opt-val {
-  top: -151px;
-}
+} */
 
 
-.option:nth-child(5) input[type="radio"]:checked ~ .opt-val {
-  top: -191px;
-}
-
-
-.option:nth-child(6) input[type="radio"]:checked ~ .opt-val {
-  top: -231px;
-}
 
 #option-bg {
   position: absolute;

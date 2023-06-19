@@ -48,12 +48,12 @@ async def translate_audio(request: Request):
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "You are an AI capable of enhancing the language level of texts while maintaining the original language."},
-            {"role": "user", "content": f"Can you assist in refining this text: {text} ,without adding any additional content? It's important that the text stays in the same language and fits a {scenario} scenario."}            ]
+            {"role": "user", "content": f"Can you assist in refining this text: {text} ,without adding any additional content? It's important that the text stays in the same language and fits a {scenario} scenario."}]
     )
 
     content = response['choices'][0]['message']['content']
 
-    return {content}
+    return {content[-1]}
 
 
 

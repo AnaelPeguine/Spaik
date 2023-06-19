@@ -148,21 +148,24 @@ navigator.mediaDevices.getUserMedia(audioIN)
   }
 
 
-
-  radioButtons = document.querySelectorAll('input[type="radio"]');
-  console.log(radioButtons)
-  // add event listener to each radio button
-  radioButtons.forEach(function(radioButton) {
-    radioButton.addEventListener('change', function(event) {
-      // get the associated label
-      const labelElement = radioButton.nextElementSibling.nextElementSibling.innerText; // Get the next sibling element (the label)
-
-      // update the #selected-value div's text
-      document.getElementById('selected-value').innerText = labelElement;
-      console.log(document.getElementById('selected-value').innerText)
+  document.addEventListener('DOMContentLoaded', (event) => {
+    const radioButtons = document.querySelectorAll('input[type="radio"]');
+    const optionsViewButton = document.getElementById('options-view-button');
+  
+    radioButtons.forEach(function(radioButton) {
+      radioButton.onclick = function() {
+        const labelElement = radioButton.nextElementSibling.nextElementSibling.nextElementSibling
+        document.getElementById('selected-value').innerText = labelElement.innerText;
+        optionsViewButton.checked = false; // Close the options view
+      }
     });
   });
+ 
 
+
+  
+
+  
 // Typewriter effect
 function typewriterEffect(elem, text, delay) {
 

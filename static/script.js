@@ -4,10 +4,7 @@ let mediaStreamObj;
 let mediaRecorder;
 let dataArray = [];
 
-function getSelectedOption() {
-  let selectedValueElement = document.getElementById('selected-value');
-  return selectedValueElement.innerText;
-}
+
 
 navigator.mediaDevices.getUserMedia(audioIN)
   .then(function (stream) {
@@ -30,121 +27,140 @@ navigator.mediaDevices.getUserMedia(audioIN)
       }
     });
 
-    mediaRecorder.ondataavailable = function (ev) {
-      dataArray.push(ev.data);
-      console.log('push')
-      console.log(ev.data)
-    };
-
-    mediaRecorder.onstop = function (ev) {
-      console.log(dataArray.length);
-      let selectedOption = getSelectedOption();
-
-      let audioData = new Blob(dataArray, { type: "audio/mp3" });
-
-      dataArray = [];
-      let formData = new FormData();
-      formData.append('audio', audioData, 'audio2.mp3');
-
-      fetch('/uploadaudio/', {
-        method: 'POST',
-        body: formData
-      })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then(success => {
-          console.log(success);
-
-          fetch('/translateaudio/', {
-            method: 'POST',
-            body: formData
-          })
-            .then(response => {
-              if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-              }
-              return response.json();
-            })
-            .then(success => {
-              console.log(success);
-              console.log(selectedOption);
-
-              fetch('http://localhost:8005/improver/', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ "content": success, "scenario":selectedOption })
-              })
-                .then(response => {
-                  if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                  }
-                  return response.json();
-                })
-                .then(data => {
-                  console.log(data[0]);
-
-                  let improvedTextElement = document.getElementById('improvedText');
-
-                  // split text into sentences
-                  let sentences = data[0].match(/[^\.!\?]+[\.!\?]+/g);
-                  console.log(sentences)
-                  window.speechSynthesis.onvoiceschanged = function () {
-                    let voices = window.speechSynthesis.getVoices();
-                    let selectedVoice = voices.find(voice => voice.name.toLowerCase().includes('female') || voice.name.toLowerCase().includes('woman') || voice.name.toLowerCase().includes('girl'));
-
-                    if (!selectedVoice) {
-                      console.log('No female voice found');
-                      return;
-                    }
-
-                    // create and speak utterances
-                    let utterance;
-                    let index = 0;
-
-                    function speakNextUtterance() {
-                      if (index < sentences.length) {
-                        utterance = new SpeechSynthesisUtterance(sentences[index]);
-                        utterance.voice = selectedVoice;
-                        window.speechSynthesis.speak(utterance);
-                        improvedTextElement.classList.add('visible');
-                        typewriterEffect(improvedTextElement, sentences[index], 70) // apply typewriter effect
-                          .then(() => {
-                            index++;
-                            speakNextUtterance(); // call the next utterance recursively
-                          })
-                          .catch(error => {
-                            console.error('Error:', error);
-                          });
-                      }
-                    }
-
-                    speakNextUtterance();
-                  };
-                })
-                .catch(error => {
-                  console.error('Error:', error);
-                });
-            })
-            .catch(error => {
-              console.error('Error:', error);
-            });
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-    };
+    mediaRecorder.ondataavailable = handleDataAvailable;
+    mediaRecorder.onstop = stopRecording;
 
     let audioElement = document.querySelector('audio');
     audioElement.srcObject = mediaStreamObj;
   })
   .catch(function (err) {
     console.log(err.name, err.message);
+  });
+
+  function handleDataAvailable(ev) {
+    dataArray.push(ev.data);
+    console.log('push')
+    console.log(ev.data)
+  }
+
+  function stopRecording(ev) {
+    console.log(dataArray.length);
+  
+    let audioData = new Blob(dataArray, { type: "audio/mp3" });
+  
+    dataArray = [];
+    let formData = new FormData();
+    formData.append('audio', audioData, 'audio2.mp3');
+  
+    uploadAudio(formData)
+      .then(data => translateAudio(formData))
+      .then(data => improveText(data))
+      .catch(error => console.error('Error:', error));
+  }
+
+  function uploadAudio(formData) {
+    return fetch('/uploadaudio/', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    });
+  }
+  
+  function translateAudio(formData) {
+    return fetch('/translateaudio/', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    });
+  }
+
+  function improveText(success) {
+    console.log(success);
+    console.log(document.getElementById('selected-value').innerText);
+
+    fetch('http://localhost:8005/improver/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ "content": success, "scenario":document.getElementById('selected-value').innerText })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log(data[0]);
+
+      let improvedTextElement = document.getElementById('improvedText');
+
+      // split text into sentences
+      let sentences = data[0].match(/[^\.!\?]+[\.!\?]+/g);
+      console.log(sentences)
+      window.speechSynthesis.onvoiceschanged = function () {
+        let voices = window.speechSynthesis.getVoices();
+        let selectedVoice = voices.find(voice => voice.name.toLowerCase().includes('female') || voice.name.toLowerCase().includes('woman') || voice.name.toLowerCase().includes('girl'));
+
+        if (!selectedVoice) {
+          console.log('No female voice found');
+          return;
+        }
+
+        // create and speak utterances
+        let utterance;
+        let index = 0;
+
+        function speakNextUtterance() {
+          if (index < sentences.length) {
+            utterance = new SpeechSynthesisUtterance(sentences[index]);
+            utterance.voice = selectedVoice;
+            window.speechSynthesis.speak(utterance);
+            improvedTextElement.classList.add('visible');
+            typewriterEffect(improvedTextElement, sentences[index], 70) // apply typewriter effect
+              .then(() => {
+                index++;
+                speakNextUtterance(); // call the next utterance recursively
+              })
+              .catch(error => {
+                console.error('Error:', error);
+              });
+          }
+        }
+
+        speakNextUtterance();
+      };
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
+
+
+
+  radioButtons = document.querySelectorAll('input[type="radio"]');
+  console.log(radioButtons)
+  // add event listener to each radio button
+  radioButtons.forEach(function(radioButton) {
+    radioButton.addEventListener('change', function(event) {
+      // get the associated label
+      const labelElement = radioButton.nextElementSibling.nextElementSibling.innerText; // Get the next sibling element (the label)
+
+      // update the #selected-value div's text
+      document.getElementById('selected-value').innerText = labelElement;
+      console.log(document.getElementById('selected-value').innerText)
+    });
   });
 
 // Typewriter effect
@@ -164,6 +180,8 @@ function typewriterEffect(elem, text, delay) {
     }, delay);
   });
 }
+
+
 
 
 

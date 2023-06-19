@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File,HTTPException
+from fastapi import FastAPI, UploadFile, File,Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 import shutil
@@ -40,13 +40,15 @@ async def translate_audio():
     return transcript_text
 
 @app.post("/improver/")
-async def improve_english_level(text: Text):  # Include text parameter
+async def translate_audio(request: Request):
+    data = await request.json()
+    text = data.get('content') # default to 'whisper-1' if no language is provided
+    scenario = data.get('scenario')
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            # {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": f"Improve the English level of the text and make it suitable for a presentation in front of an audience: {text.content}"},
-        ]
+            {"role": "system", "content": "You are an AI capable of enhancing the language level of texts while maintaining the original language."},
+            {"role": "user", "content": f"Can you assist in refining this text: {text} ,without adding any additional content? It's important that the text stays in the same language and fits a {scenario} scenario."}            ]
     )
 
     content = response['choices'][0]['message']['content']

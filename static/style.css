@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100vh;
+  margin: 0;
+  background-color: #000;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 20px 0;  /* Added this line */
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 20px;
+}
+
+.right {
+  margin-left: auto;
+}
+
+.right a {
+  padding: 10px 20px;
+  border: 2px solid white;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+}
+
+.right a:hover {
+  background-color: white;
+  color: black;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+/* The rest of your CSS here... */
+
+
+  button {
+    width: 35px;
+    height: 35px;
+    font-size: 0;
+    background-color: red;
+    border: 0;
+    border-radius: 35px;
+    outline: none;
+    animation-name: pulse;
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+  
+  .Rec {
+    width: 50px;
+    height: 50px;
+    font-size: 0;
+    background-color: red;
+    border: 0;
+    border-radius: 35px;
+    outline: none;
+  }
+  .Rec .fa-microphone {
+    font-size: 20px; /* adjust as needed */
+    color: white; /* adjust as needed */
+}
+.Rec .fa-circle {
+  font-size: 20px; /* adjust as needed */
+  color: white; /* adjust as needed */
+}
+  
+  @keyframes pulse {
+    0% {
+      box-shadow: 0px 0px 5px 0px rgba(173, 0, 0, .3);
+    }
+    65% {
+      box-shadow: 0px 0px 5px 13px rgba(173, 0, 0, .3);
+    }
+    90% {
+      box-shadow: 0px 0px 5px 13px rgba(173, 0, 0, 0);
+    }
+
+    
+  }

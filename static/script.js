@@ -11,6 +11,8 @@ navigator.mediaDevices.getUserMedia(audioIN)
     mediaStreamObj = stream;
 
     let toggleButton = document.getElementById('btnToggle');
+    let icon = document.getElementById('icon');
+
     let isRecording = false;
 
     let options = { audioBitsPerSecond: 128000 }
@@ -20,10 +22,15 @@ navigator.mediaDevices.getUserMedia(audioIN)
       if (isRecording) {
         mediaRecorder.stop();
         isRecording = false;
+        icon.className = 'far fa-stop-circle'
+
+        
       } else {
         mediaRecorder.start();
         console.log('Recording');
         isRecording = true;
+        icon.className = "fas fa-microphone"
+
       }
     });
 

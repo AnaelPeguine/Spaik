@@ -53,7 +53,7 @@ async def translate_audio(request: Request):
 
     content = response['choices'][0]['message']['content']
 
-    return {content[-1]}
+    return {content}
 
 
 

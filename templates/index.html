@@ -13,7 +13,7 @@ body {
   justify-content: space-between;
   height: 100vh;
   margin: 0;
-  background-color: #000000;
+  background-color: rgba(107, 193, 255, 0.1);
   font-family: 'Montserrat', sans-serif;
   font-size: 20px;
 }
@@ -25,32 +25,37 @@ ul {
   display: flex;
   justify-content: space-between;
   width: 100%;
+  background-color: rgb(255, 255, 255);
 }
 
 li a {
   display: block;
-  color: white;
+  color:rgba(22, 21, 79);
   text-align: center;
   padding: 14px 30px;
   text-decoration: none;
   font-size: 25px;
 }
+.companyName {
+  font-size: 35px;
+  padding-top: 7px;
 
+}
 .right {
   margin-left: auto;
-  padding-right: 20px; 
+  padding-right: 20px;
+   
 }
 
 .right a {
   padding: 10px 20px;
-  border: 2px solid white;
+  border: 2px solid rgb(31, 2, 87);
   border-radius: 25px;
   transition: all 0.3s ease;
 }
 
 .right a:hover {
-  background-color: white;
-  color: black;
+  background-color:  rgba(107, 193, 255, 0.1);
 }
 
 .container {
@@ -58,6 +63,7 @@ li a {
   align-items: center;
   justify-content: center;
   height: 100vh;
+  
 }
 
 button {
@@ -82,14 +88,15 @@ button {
   justify-content: center;
   height: 100vh;
 }
+
 .title {
-  color: white; 
+  color: rgb(31, 2, 87); 
   font-size:35px;
   margin-bottom: 40px;
 }
 
 .subtitle {
-  color: white; 
+  color: rgb(31, 2, 87); 
   font-size: 19px;
   padding-bottom: 10px;
   margin-top: 100px;
@@ -97,10 +104,8 @@ button {
 
 
 .improved {
-  width: calc(100vw - 300px);
-  background-color: #000;
-  border-color: #000;
-  color: white;
+  border-color: rgb(31, 2, 87);
+  color: rgb(31, 2, 87);
   padding: 10px;
   margin: 20px;
   text-align: center;
@@ -109,15 +114,33 @@ button {
 
 .improved.visible {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border: 2px solid white;
   padding: 50px;
   margin: 20px;
   text-align: center;
-  margin-top: 40px; /* Add this line */
+  margin-top: 40px;
+  position: relative;
+	max-width: 30em;
+	
+	background-color: #fff;
+	padding: 1.125em 1.5em;
+	font-size: 1.25em;
+	border-radius: 1rem;
+  box-shadow:	0 0.125rem 0.5rem rgba(0, 0, 0, .3), 0 0.0625rem 0.125rem rgba(0, 0, 0, .2);
 
+}
+
+
+p::before {
+	content: '';
+	position: absolute;
+	width: 0;
+	height: 0;
+	bottom: 100%;
+	left: 1.5em; 
+	border: .75rem solid transparent;
+	border-top: none;
+	border-bottom-color: #fff;
+	filter: drop-shadow(0 -0.0625rem 0.0625rem rgba(0, 0, 0, .1));
 }
 
 .Rec {
@@ -148,7 +171,11 @@ option {
   text-align-last: center
 }
 
-.Rec .fa-microphone {
+.Rec .fa-stop-circle {
+  font-size: 20px; /* adjust as needed */
+  color: white; /* adjust as needed */
+}
+.Rec .fa-microphone	 {
   font-size: 20px; /* adjust as needed */
   color: white; /* adjust as needed */
 }
@@ -324,7 +351,6 @@ input[type="radio"] {
 }
 
 .s-c:hover ~ i {
-  color: #fff;
   opacity: 0;
 }
 
@@ -455,24 +481,20 @@ input[type="radio"] {
   display: block;
 }
 
-.option:hover .label {
-  color: #fff;
-}
-
 .option:nth-child(1):hover ~ #option-bg {
   top: 0;
-  background-color: #49c065;
+  background-color: rgb(212, 212, 212, 0.3);
   border-radius: 4px 4px 0 0;
 }
 
 .option:nth-child(2):hover ~ #option-bg {
   top: 40px;
-  background-color: #ec6c9d;
+  background-color: rgb(212, 212, 212, 0.3);
 }
 
 .option:nth-child(3):hover ~ #option-bg {
   top: 80px;
-  background-color: #4f9cf4;
+  background-color: rgb(212, 212, 212, 0.3);
 }
 
 
@@ -492,7 +514,7 @@ input[type="radio"] {
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <body>
 <ul>
-<li><a class="active">Spaik</a></li>
+<li><a class="companyName">Spaik</a></li>
 <li class="right"><a href="#signin">Sign In</a></li>
 </ul>
 <div class="container">
@@ -540,9 +562,10 @@ input[type="radio"] {
     <button id="btnToggle" class="Rec">
       <i id= "icon" class="fas fa-microphone"></i>
     </button>
-    <div id="improvedText" class ="improved">
-    </div>
+    <p id="improvedText" class ="improved">
+    </p>
 </div> 
+
 <script src="/static/script.js"></script>
 </body>
 </html>

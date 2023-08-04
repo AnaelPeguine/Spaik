@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -66,7 +67,7 @@ li a {
   
 }
 
-button {
+.Rec {
   width: 35px;
   height: 35px;
   font-size: 0;
@@ -509,13 +510,132 @@ input[type="radio"] {
     box-shadow: 0px 0px 5px 13px rgba(173, 0, 0, 0);
   }
 }
+
+.submitButton {
+  background-color: rgb(31, 2, 87); 
+  font-size: 16px;     
+  color: white;
+  padding: 14px 20px;
+  margin: 8px auto; 
+  border: none;
+  cursor: pointer;
+  width: 60%;
+  border-radius: 20px; 
+  display: block; 
+}
+
+/* Center the image and position the close button */
+.nav {
+  text-align: center;
+  margin: 24px 0 12px 0;
+  position: relative;
+}
+
+.modalContainer {
+  padding: 24px;
+  padding-top: 40px;
+}
+
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(87, 87, 87); /* Fallback color */
+  background-color: rgba(87, 87, 87, 0.5); /* Black w/ opacity */
+  padding-top: 60px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: 1px solid #888;
+  width: 400px; /* Width of the modal */
+  height: 320px; /* Height of the modal */
+  overflow: auto;
+  border-radius: 15px; /* Add rounded corners */
+
+}
+
+/* The Close Button (x) */
+.close {
+  position: absolute;
+  right: 25px;
+  top: 0;
+  color: #000;
+  font-size: 35px;
+  font-weight: bold; 
+}
+
+
+.login__field {
+	padding: 20px 0px;	
+	position: relative;	
+}
+
+.login__icon {
+	position: absolute;
+	top: 30px;
+  color: rgb(31, 2, 87); 
+}
+
+.login__input {
+	border: none;
+	border-bottom: 2px solid #D1D1D4;
+	background: none;
+	padding: 10px;
+	padding-left: 24px;
+	font-weight: 500;
+	width: 75%;
+	transition: .2s;
+  font-size: 16px;     
+}
+
+.login__input:active,
+.login__input:focus,
+.login__input:hover {
+	outline: none;
+	border-bottom-color: #6A679E;
+}
+
+/* Add Zoom Animation */
+.animate {
+  -webkit-animation: animatezoom 0.6s;
+  animation: animatezoom 0.6s
+}
+
+@-webkit-keyframes animatezoom {
+  from {-webkit-transform: scale(0)} 
+  to {-webkit-transform: scale(1)}
+}
+  
+@keyframes animatezoom {
+  from {transform: scale(0)} 
+  to {transform: scale(1)}
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+  span.psw {
+     display: block;
+     float: none;
+  }
+}
+
 </style>
 </head>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <body>
 <ul>
 <li><a class="companyName">Spaik</a></li>
-<li class="right"><a href="#signin">Sign In</a></li>
+<li class="right" onclick="document.getElementById('id01').style.display='block'" style="width:auto;"><a href="#signin">Sign In</a></li>
 </ul>
 <div class="container">
   <h1 class="title">Refine Your English Fluency</h1>
@@ -569,3 +689,37 @@ input[type="radio"] {
 <script src="/static/script.js"></script>
 </body>
 </html>
+
+<div id="id01" class="modal">
+  
+  <form class="modal-content animate" action="/action_page.php" method="post">
+    <div class="nav">
+      <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+    </div>
+    <div class="modalContainer">
+      <!-- <input type="text" placeholder="Enter Username" name="uname" required>
+
+      <input type="password" placeholder="Enter Password" name="psw" required> -->
+      <div class="login__field">
+        <i class="login__icon fas fa-user"></i>
+        <input type="text" class="login__input" placeholder="User name / Email">
+      </div>
+      <div class="login__field">
+        <i class="login__icon fas fa-lock"></i>
+        <input type="password" class="login__input" placeholder="Password">
+      </div>
+      <button class="submitButton" type="submit">Sign In</button>
+    </div>
+  </form>
+</div>
+<script>
+  // Get the modal
+  var modal = document.getElementById('id01');
+  
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+      if (event.target == modal) {
+          modal.style.display = "none";
+      }
+  }
+  </script>

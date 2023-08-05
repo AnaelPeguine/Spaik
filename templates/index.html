@@ -583,8 +583,7 @@ input[type="radio"] {
 .login__field {
 	padding: 20px 0px;	
 	position: relative;	
-  font-family: 'Montserrat', sans-serif;
-
+  
 }
 
 .login__icon {
@@ -642,7 +641,7 @@ input[type="radio"] {
 <body>
 <ul>
 <li><a class="companyName">Spaik</a></li>
-<li class="right" onclick="document.getElementById('id01').style.display='block'" style="width:auto;"><a href="#signin">Sign In</a></li>
+<li class="right" id="signInButton" onclick="document.getElementById('id01').style.display='block'" style="width:auto;"><a href="#signin">Sign In</a></li>
 </ul>
 <div class="container">
   <h1 class="title">Refine Your English Fluency</h1>
@@ -699,21 +698,18 @@ input[type="radio"] {
 
 <div id="id01" class="modal">
   
-  <form class="modal-content animate" action="/action_page.php" method="post">
+  <form class="modal-content animate" onsubmit="submitForm(event)">
     <div class="nav">
       <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
     </div>
     <div class="modalContainer">
-      <!-- <input type="text" placeholder="Enter Username" name="uname" required>
-
-      <input type="password" placeholder="Enter Password" name="psw" required> -->
       <div class="login__field">
         <i class="login__icon fas fa-user"></i>
-        <input type="text" class="login__input" placeholder="User name / Email">
+        <input type="text" id="username" class="login__input" placeholder="User name / Email">
       </div>
       <div class="login__field">
         <i class="login__icon fas fa-lock"></i>
-        <input type="password" class="login__input" placeholder="Password">
+        <input type="password" id="password" class="login__input" placeholder="Password">
       </div>
       <button class="submitButton" type="submit">Sign In</button>
     </div>
@@ -729,4 +725,40 @@ input[type="radio"] {
           modal.style.display = "none";
       }
   }
+  async function submitForm(event) {
+      event.preventDefault();
+      const formData = {
+          username: document.getElementById('username').value,
+          password: document.getElementById('password').value
+      };
+      const response = await fetch('/signup', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+      });
+      const result = await response.json();
+      if (response.ok) {
+        // Update the button text to the user's username
+        document.getElementById('signInButton').innerHTML = `<a href="#user">${formData.username}</a>`;
+        // Remove the onclick attribute to make it unclickable
+         signInButton.removeAttribute('onclick');
+        // Change the cursor style to "default"
+        signInButton.style.cursor = 'default';
+
+        // Remove any hover effect by setting the styles directly
+        signInButton.style.backgroundColor = 'inherit'; // Replace with the actual normal background color if needed
+        signInButton.style.color = 'inherit'; // Replace with the actual normal text color if needed
+
+        // Disable pointer events (including hover)
+        signInButton.style.pointerEvents = 'none';
+        modal.style.display = "none";
+      } else {
+          alert('Error: ' + result.error);
+      }
+
+  }
+
+    
   </script>

@@ -1,11 +1,16 @@
-from fastapi import FastAPI, UploadFile, File,Request
+
+from fastapi import FastAPI, UploadFile, File,Request,HTTPException, Depends
 from fastapi.staticfiles import StaticFiles
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.responses import HTMLResponse
 import shutil
 import json
 import openai
 from pydantic import BaseModel
 from pydub import AudioSegment
+import sqlite3
+from passlib.context import CryptContext
+from typing import Optional
 
 from config import API_KEY
 openai.api_key = API_KEY
@@ -47,16 +52,62 @@ async def translate_audio(request: Request):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "You are an AI capable of enhancing the language level of texts while maintaining the original language."},
-            {"role": "user", "content": f"Can you assist in refining this text: {text} ,without adding any additional content? It's important that the text stays in the same language and fits a {scenario} scenario."}]
+            {"role": "system", "content": "You are an AI capable of enhancing the language level of texts while maintaining the original language.Your response should start directly with the revised text, with no preamble or introduction."},
+            {"role": "user", "content": f"an you assist in refining this text: {text} ,without adding any additional content? Make the revised text fit a {scenario} scenario."}
+        ]
     )
 
     content = response['choices'][0]['message']['content']
 
     return {content}
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+def get_user(db, username: str):
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+    user = cursor.fetchone()
+    return user
+
+def authenticate_user(db, username: str, password: str):
+    user = get_user(db, username)
+    if not user:
+        return False
+    if not verify_password(password, user[2]):
+        return False
+    return user
+
+def create_user(db, username: str, password: str):
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, get_password_hash(password)))
+    db.commit()
+
+@app.post("/token")
+def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    with sqlite3.connect("spaikDB.db") as conn:
+        user = authenticate_user(conn, form_data.username, form_data.password)
+        if not user:
+            raise HTTPException(status_code=401, detail="Incorrect username or password")
+        return {"access_token": user[0], "token_type": "bearer"}
+
+@app.post("/signup")
+async def sign_up(request: Request):
+    data = await request.json()
+    username = data.get('username') # default to 'whisper-1' if no language is provided
+    password = data.get('password')
+    with sqlite3.connect("spaikDB.db") as conn:
+        create_user(conn, username, password)
+    return {"message": "User created successfully"}
+
 
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="localhost", port=8005)
+    uvicorn.run(app, host="localhost", port=8003)

@@ -42,20 +42,36 @@ li a {
   padding-top: 7px;
 
 }
-.right {
-  margin-left: auto;
+.signin {
   padding-right: 20px;
    
 }
 
-.right a {
+.signin a {
   padding: 10px 20px;
   border: 2px solid rgb(31, 2, 87);
   border-radius: 25px;
   transition: all 0.3s ease;
 }
 
-.right a:hover {
+.signin a:hover {
+  background-color:  rgba(107, 193, 255, 0.1);
+}
+
+.login {
+  margin-left: auto;
+  padding-right: 20px;
+
+}
+
+.login a {
+  padding: 10px 20px;
+  border: 2px solid rgb(31, 2, 87);
+  border-radius: 25px;
+  transition: all 0.3s ease;
+}
+
+.login a:hover {
   background-color:  rgba(107, 193, 255, 0.1);
 }
 
@@ -511,6 +527,11 @@ input[type="radio"] {
   }
 }
 
+.error-message {
+    color: red;
+    font-size: 14px;     
+}
+
 .submitButton {
   font-size: 16px;     
   color: rgb(31, 2, 87); ;
@@ -564,7 +585,7 @@ input[type="radio"] {
   margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
   border: 1px solid #888;
   width: 400px; /* Width of the modal */
-  height: 320px; /* Height of the modal */
+  height: 350px; /* Height of the modal */
   overflow: auto;
   border-radius: 15px; 
 }
@@ -641,7 +662,8 @@ input[type="radio"] {
 <body>
 <ul>
 <li><a class="companyName">Spaik</a></li>
-<li class="right" id="signInButton" onclick="document.getElementById('id01').style.display='block'" style="width:auto;"><a href="#signin">Sign In</a></li>
+<li class="login" id="logInButton" onclick="document.getElementById('logInModal').style.display='block'" style="width:auto;"><a href="#login">Log In</a></li>
+<li class="signin" id="signInButton" onclick="document.getElementById('signInModal').style.display='block'" style="width:auto;"><a href="#signin">Sign In</a></li>
 </ul>
 <div class="container">
   <h1 class="title">Refine Your English Fluency</h1>
@@ -696,40 +718,40 @@ input[type="radio"] {
 </body>
 </html>
 
-<div id="id01" class="modal">
-  
+<div id="signInModal" class="modal"> 
   <form class="modal-content animate" onsubmit="submitForm(event)">
     <div class="nav">
-      <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+      <span onclick="document.getElementById('signInModal').style.display='none'" class="close" title="Close Modal">&times;</span>
     </div>
     <div class="modalContainer">
       <div class="login__field">
         <i class="login__icon fas fa-user"></i>
-        <input type="text" id="username" class="login__input" placeholder="User name / Email">
+        <input type="text" id="usernameSignIn" class="login__input" placeholder="User name / Email">
       </div>
       <div class="login__field">
         <i class="login__icon fas fa-lock"></i>
-        <input type="password" id="password" class="login__input" placeholder="Password">
+        <input type="password" id="passwordSignIn" class="login__input" placeholder="Password">
       </div>
+      <div id="passwordErrorSignIn" class="error-message"></div>
       <button class="submitButton" type="submit">Sign In</button>
     </div>
   </form>
 </div>
 <script>
   // Get the modal
-  var modal = document.getElementById('id01');
+  var signInModal = document.getElementById('signInModal');
   
   // When the user clicks anywhere outside of the modal, close it
   window.onclick = function(event) {
-      if (event.target == modal) {
-          modal.style.display = "none";
+      if (event.target == signInModal) {
+        signInModal.style.display = "none";
       }
   }
   async function submitForm(event) {
       event.preventDefault();
       const formData = {
-          username: document.getElementById('username').value,
-          password: document.getElementById('password').value
+        username: document.getElementById('usernameSignIn').value,
+        password: document.getElementById('passwordSignIn').value
       };
       const response = await fetch('/signup', {
           method: 'POST',
@@ -739,26 +761,89 @@ input[type="radio"] {
           body: JSON.stringify(formData)
       });
       const result = await response.json();
-      if (response.ok) {
-        // Update the button text to the user's username
-        document.getElementById('signInButton').innerHTML = `<a href="#user">${formData.username}</a>`;
-        // Remove the onclick attribute to make it unclickable
-         signInButton.removeAttribute('onclick');
-        // Change the cursor style to "default"
-        signInButton.style.cursor = 'default';
+      const passwordError = document.getElementById('passwordErrorSignIn');
 
-        // Remove any hover effect by setting the styles directly
-        signInButton.style.backgroundColor = 'inherit'; // Replace with the actual normal background color if needed
-        signInButton.style.color = 'inherit'; // Replace with the actual normal text color if needed
+      if (result.error) {
+        passwordError.textContent = result.error;
+        console.log(result.error)
 
-        // Disable pointer events (including hover)
-        signInButton.style.pointerEvents = 'none';
-        modal.style.display = "none";
       } else {
-          alert('Error: ' + result.error);
+          // Update the button text to the user's username
+          document.getElementById('signInButton').innerHTML = `<a href="#user">${formData.username}</a>`;
+          // Remove the onclick attribute to make it unclickable
+          signInButton.removeAttribute('onclick');
+          // Change the cursor style to "default"
+          signInButton.style.cursor = 'default';
+          // Remove any hover effect by setting the styles directly
+          signInButton.style.backgroundColor = 'inherit'; // Replace with the actual normal background color if needed
+          signInButton.style.color = 'inherit'; // Replace with the actual normal text color if needed
+          // Disable pointer events (including hover)
+          signInButton.style.pointerEvents = 'none';
+          logInButton.style.display = "none";
+          signInModal.style.display = "none";
       }
+  
+  }   
+  </script>
+  <div id="logInModal" class="modal"> 
+    <form class="modal-content animate" id="login-form"  onsubmit="submitLogInForm(event)">
+      <div class="nav">
+        <span onclick="document.getElementById('logInModal').style.display='none'" class="close" title="Close Modal">&times;</span>
+      </div>
+      <div class="modalContainer">
+        <div class="login__field">
+          <i class="login__icon fas fa-user"></i>
+          <input type="text" id="username" name ="username" class="login__input" placeholder="User name / Email">
+        </div>
+        <div class="login__field">
+          <i class="login__icon fas fa-lock"></i>
+          <input type="password" id="password" name="password" class="login__input" placeholder="Password">
+        </div>
+        <div id="passwordError" class="error-message"></div>
+        <button class="submitButton" type="submit">Log In</button>
+      </div>
+    </form>
+  </div>
+  <script>
+      // Get the modal
+  var modal = document.getElementById('logInModal');
 
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function (event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+
+  const loginForm = document.querySelector("#login-form"); // If login-form is an id
+
+  loginForm.addEventListener('submit', submitLogInForm);
+
+  async function submitLogInForm(event) {
+    event.preventDefault();
+
+    const formData = new URLSearchParams(new FormData(event.target));
+
+    const response = await fetch('/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: formData,
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Logged in:', data);
+      document.getElementById('logInButton').innerHTML = `<a href="#user">${data.username}</a>`;
+      signInButton.style.display = "none";
+      modal.style.display = "none";
+
+      // Other code to update the button and close the modal
+    } else {
+      // Handle failure, e.g., display an error message
+      console.log("error");
+    }
   }
 
-    
-  </script>
+</script>

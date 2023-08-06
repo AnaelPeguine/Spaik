@@ -1,5 +1,5 @@
 
-from fastapi import FastAPI, UploadFile, File,Request,HTTPException, Depends
+from fastapi import FastAPI, UploadFile, File,Request,HTTPException, Depends, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.responses import HTMLResponse
@@ -11,6 +11,7 @@ from pydub import AudioSegment
 import sqlite3
 from passlib.context import CryptContext
 from typing import Optional
+import re
 
 from config import API_KEY
 openai.api_key = API_KEY
@@ -80,7 +81,7 @@ def authenticate_user(db, username: str, password: str):
     user = get_user(db, username)
     if not user:
         return False
-    if not verify_password(password, user[2]):
+    if not verify_password(password, user[1]):
         return False
     return user
 
@@ -88,20 +89,34 @@ def create_user(db, username: str, password: str):
     cursor = db.cursor()
     cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, get_password_hash(password)))
     db.commit()
+    
+def validate_password(password: str) -> bool:
+    min_length = 8
+    if len(password) < min_length or not re.search(r'\d', password):
+        return False
+    return True
 
 @app.post("/token")
 def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    with sqlite3.connect("spaikDB.db") as conn:
-        user = authenticate_user(conn, form_data.username, form_data.password)
-        if not user:
-            raise HTTPException(status_code=401, detail="Incorrect username or password")
-        return {"access_token": user[0], "token_type": "bearer"}
+    try:
+        with sqlite3.connect("spaikDB.db") as conn:
+            user = authenticate_user(conn, form_data.username, form_data.password)
+            if not user:
+                raise HTTPException(status_code=401, detail="Incorrect username or password")
+            return {"access_token": user[2], "token_type": "bearer", "username": user[0]}  
+    except Exception as e:
+        print(f"Exception occurred: {str(e)}")  # Log the exception
+        raise HTTPException(status_code=500, detail=str(e))  # Provide the error detail to the client
+
 
 @app.post("/signup")
 async def sign_up(request: Request):
     data = await request.json()
     username = data.get('username') # default to 'whisper-1' if no language is provided
     password = data.get('password')
+    # Validate the password
+    if not validate_password(password):
+        return {"error": "Password must be at least 8 characters long and include at least one digit."}
     with sqlite3.connect("spaikDB.db") as conn:
         create_user(conn, username, password)
     return {"message": "User created successfully"}

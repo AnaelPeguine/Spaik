@@ -7,7 +7,7 @@ body {
   justify-content: space-between;
   height: 100vh;
   margin: 0;
-  background-color: #ffffff;
+  background-color: rgba(107, 193, 255, 0.1);
   font-family: 'Montserrat', sans-serif;
   font-size: 20px;
 }
@@ -15,35 +15,57 @@ body {
 ul {
   list-style-type: none;
   margin: 0;
-  padding: 20px 0;  /* Added this line */
+  padding: 20px 0; 
   display: flex;
   justify-content: space-between;
   width: 100%;
+  background-color: rgb(255, 255, 255);
 }
 
 li a {
   display: block;
-  color: white;
+  color:rgba(22, 21, 79);
   text-align: center;
-  padding: 14px 16px;
+  padding: 14px 30px;
   text-decoration: none;
-  font-size: 20px;
+  font-size: 25px;
+}
+.companyName {
+  font-size: 35px;
+  padding-top: 7px;
+
+}
+.signin {
+  padding-right: 20px;
+    
 }
 
-.right {
-  margin-left: auto;
-}
-
-.right a {
+.signin a {
   padding: 10px 20px;
-  border: 2px solid white;
+  border: 2px solid rgb(31, 2, 87);
   border-radius: 25px;
   transition: all 0.3s ease;
 }
 
-.right a:hover {
-  background-color: white;
-  color: black;
+.signin a:hover {
+  background-color:  rgba(107, 193, 255, 0.1);
+}
+
+.login {
+  margin-left: auto;
+  padding-right: 20px;
+
+}
+
+.login a {
+  padding: 10px 20px;
+  border: 2px solid rgb(31, 2, 87);
+  border-radius: 25px;
+  transition: all 0.3s ease;
+}
+
+.login a:hover {
+  background-color:  rgba(107, 193, 255, 0.1);
 }
 
 .container {
@@ -51,59 +73,578 @@ li a {
   align-items: center;
   justify-content: center;
   height: 100vh;
-}
-/* The rest of your CSS here... */
-
-
-  button {
-    width: 35px;
-    height: 35px;
-    font-size: 0;
-    background-color: red;
-    border: 0;
-    border-radius: 35px;
-    outline: none;
-    animation-name: pulse;
-    animation-duration: 1.5s;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-  }
-  .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-  }
   
-  .Rec {
-    width: 50px;
-    height: 50px;
-    font-size: 0;
-    background-color: red;
-    border: 0;
-    border-radius: 35px;
-    outline: none;
-  }
-  .Rec .fa-microphone {
-    font-size: 20px; /* adjust as needed */
-    color: white; /* adjust as needed */
 }
-.Rec .fa-circle {
+
+.Rec {
+  width: 35px;
+  height: 35px;
+  font-size: 0;
+  background-color: red;
+  border: 0;
+  border-radius: 35px;
+  outline: none;
+  animation-name: pulse;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.title {
+  color: rgb(31, 2, 87); 
+  font-size:35px;
+  margin-bottom: 40px;
+}
+
+.subtitle {
+  color: rgb(31, 2, 87); 
+  font-size: 19px;
+  padding-bottom: 10px;
+  margin-top: 100px;
+}
+
+
+.improved {
+  border-color: rgb(31, 2, 87);
+  color: rgb(31, 2, 87);
+  padding: 10px;
+  margin: 20px;
+  text-align: center;
+  display: none;
+}
+
+.improved.visible {
+  display: flex;
+  padding: 50px;
+  margin: 20px;
+  text-align: center;
+  margin-top: 40px;
+  position: relative;
+  max-width: 30em;
+  
+  background-color: #fff;
+  padding: 1.125em 1.5em;
+  font-size: 1.25em;
+  border-radius: 1rem;
+  box-shadow:	0 0.125rem 0.5rem rgba(0, 0, 0, .3), 0 0.0625rem 0.125rem rgba(0, 0, 0, .2);
+
+}
+
+
+p::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  bottom: 100%;
+  left: 1.5em; 
+  border: .75rem solid transparent;
+  border-top: none;
+  border-bottom-color: #fff;
+  filter: drop-shadow(0 -0.0625rem 0.0625rem rgba(0, 0, 0, .1));
+}
+
+.Rec {
+  width: 50px;
+  height: 50px;
+  font-size: 0;
+  background-color: red;
+  border: 0;
+  border-radius: 35px;
+  outline: none;
+}
+
+select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f1f1f1;
+    color: #555;
+    width: 200px;
+    margin-bottom: 30px; 
+    border: 2px solid #dad8d8
+}
+
+option {
+  background-color: #f1f1f1;
+  color: #555;
+  text-align-last: center
+}
+
+.Rec .fa-stop-circle {
   font-size: 20px; /* adjust as needed */
   color: white; /* adjust as needed */
 }
-  
-  @keyframes pulse {
-    0% {
-      box-shadow: 0px 0px 5px 0px rgba(173, 0, 0, .3);
-    }
-    65% {
-      box-shadow: 0px 0px 5px 13px rgba(173, 0, 0, .3);
-    }
-    90% {
-      box-shadow: 0px 0px 5px 13px rgba(173, 0, 0, 0);
-    }
+.Rec .fa-microphone	 {
+  font-size: 20px; /* adjust as needed */
+  color: white; /* adjust as needed */
+}
 
-    
+* {
+  user-select: none;
+}
+
+*:focus {
+  outline: none;
+}
+
+.brd {
+  border: 1px solid #e2eded;
+  border-color: #eaf1f1 #e4eded #dbe7e7 #e4eded;
+}
+
+#info {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  color: #2d3667;
+  font-size: 16px;
+  text-align: center;
+  padding: 14px;
+  background-color: #f3f9f9;
+}
+
+#app-cover {
+  position: relative;
+  width: 300px;
+  height: 42px;
+  z-index: 1;
+}
+
+#select-button {
+  height: 16px;
+  padding: 12px 14px;
+  background-color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#options-view-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 3;
+}
+
+#selected-value {
+  font-size: 16px;
+  line-height: 1;
+  margin-right: 26px;
+}
+
+.option i {
+  width: 16px;
+  height: 16px;
+}
+
+.option,
+.label {
+  color: #2d3667;
+  font-size: 16px;
+}
+
+#chevrons {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 12px;
+  padding: 9px 14px;
+}
+
+#chevrons i {
+  display: block;
+  height: 50%;
+  color: #d1dede;
+  font-size: 12px;
+  text-align: right;
+}
+
+#options-view-button:checked + #select-button #chevrons i {
+  color: #2d3667;
+}
+
+.options {
+  position: absolute;
+  left: 0;
+  width: 250px;
+}
+
+#options {
+  position: absolute;
+  top: 42px;
+  right: 0;
+  left: 0;
+  width: 298px;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+#options-view-button:checked ~ #options {
+  border: 1px solid #e2eded;
+  border-color: #eaf1f1 #e4eded #dbe7e7 #e4eded;
+}
+
+.option {
+  position: relative;
+  line-height: 1;
+  transition: 0.3s ease all;
+  z-index: 2;
+}
+
+.option i {
+  position: absolute;
+  left: 14px;
+  padding: 0;
+  display: none;
+}
+
+#options-view-button:checked ~ #options .option i {
+  display: block;
+  padding: 12px 0;
+}
+
+.label {
+  display: none;
+  padding: 0;
+  margin-left: 27px;
+}
+
+#options-view-button:checked ~ #options .label {
+  display: block;
+  padding: 12px 14px;
+}
+
+.s-c {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 50%;
+}
+
+.s-c.top {
+  top: 0;
+}
+
+.s-c.bottom {
+  bottom: 0;
+}
+
+input[type="radio"] {
+  position: absolute;
+  right: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.s-c:hover ~ i {
+  opacity: 0;
+}
+
+.s-c:hover {
+  height: 100%;
+  z-index: 1;
+}
+
+.s-c.bottom:hover + i {
+  bottom: -25px;
+  animation: moveup 0.3s ease 0.1s forwards;
+}
+
+.s-c.top:hover ~ i {
+  top: -25px;
+  animation: movedown 0.3s ease 0.1s forwards;
+}
+
+@keyframes moveup {
+  0% {
+    bottom: -25px;
+    opacity: 0;
   }
+  100% {
+    bottom: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes movedown {
+  0% {
+    top: -25px;
+    opacity: 0;
+  }
+  100% {
+    top: 0;
+    opacity: 1;
+  }
+}
+
+.label {
+  transition: 0.3s ease all;
+}
+
+.opt-val {
+  position: absolute;
+  left: 14px;
+  width: 217px;
+  height: 21px;
+  opacity: 0;
+  background-color: #fff;
+  transform: scale(0);
+}
+
+.option input[type="radio"]:checked ~ .opt-val {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.option input[type="radio"]:checked ~ i {
+  top: 0;
+  bottom: auto;
+  opacity: 1;
+  animation: unset;
+}
+
+.option input[type="radio"]:checked ~ .label:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+}
+
+#options-view-button:not(:checked)
+  ~ #options
+  .option
+  input[type="radio"]:checked
+  ~ .opt-val {
+  top: -30px;
+}
+
+/* .option:nth-child(1) input[type="radio"]:checked ~ .label:before {
+  background-color: #49c065;
+  border-radius: 4px 4px 0 0;
+} */
+
+.option:nth-child(1) input[type="radio"]:checked ~ .opt-val {
+  top: -31px;
+}
+
+/* .option:nth-child(2) input[type="radio"]:checked ~ .label:before {
+  background-color: #ec6c9d;
+} */
+
+.option:nth-child(2) input[type="radio"]:checked ~ .opt-val {
+  top: -71px;
+}
+
+/* .option:nth-child(3) input[type="radio"]:checked ~ .label:before {
+  background-color: #4f9cf4;
+} */
+
+.option:nth-child(3) input[type="radio"]:checked ~ .opt-val {
+  top: -111px;
+}
+/* 
+.option:nth-child(4) input[type="radio"]:checked ~ .label:before {
+  background-color: #32c766;
+} */
+
+
+
+#option-bg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 40px;
+  transition: 0.3s ease all;
+  z-index: 1;
+  display: none;
+}
+
+#options-view-button:checked ~ #options #option-bg {
+  display: block;
+}
+
+.option:nth-child(1):hover ~ #option-bg {
+  top: 0;
+  background-color: rgb(212, 212, 212, 0.3);
+  border-radius: 4px 4px 0 0;
+}
+
+.option:nth-child(2):hover ~ #option-bg {
+  top: 40px;
+  background-color: rgb(212, 212, 212, 0.3);
+}
+
+.option:nth-child(3):hover ~ #option-bg {
+  top: 80px;
+  background-color: rgb(212, 212, 212, 0.3);
+}
+
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0px 0px 5px 0px rgba(173, 0, 0, .3);
+  }
+  65% {
+    box-shadow: 0px 0px 5px 13px rgba(173, 0, 0, .3);
+  }
+  90% {
+    box-shadow: 0px 0px 5px 13px rgba(173, 0, 0, 0);
+  }
+}
+
+.error-message {
+    color: red;
+    font-size: 14px;     
+}
+
+.submitButton {
+  font-size: 16px;     
+  color: rgb(31, 2, 87); ;
+  padding: 14px 20px;
+  margin: 8px auto; 
+  border-color: rgb(31, 2, 87); 
+  background-color: #fefefe;
+  cursor: pointer;
+  width: 60%;
+  border-radius: 20px; 
+  display: block; 
+  font-family: 'Montserrat', sans-serif;
+}
+
+.submitButton:hover{
+  background-color:rgba(107, 193, 255, 0.1);
+}
+
+/* Center the image and position the close button */
+.nav {
+  text-align: center;
+  margin: 24px 0 12px 0;
+  position: relative;
+}
+
+.modalContainer {
+  padding: 24px;
+  padding-top: 40px;
+}
+
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(87, 87, 87); /* Fallback color */
+  background-color: rgba(87, 87, 87, 0.5); /* Black w/ opacity */
+  padding-top: 60px;
+  
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: 1px solid #888;
+  width: 400px; /* Width of the modal */
+  height: 350px; /* Height of the modal */
+  overflow: auto;
+  border-radius: 15px; 
+}
+
+/* The Close Button (x) */
+.close {
+  position: absolute;
+  right: 25px;
+  top: 0;
+  color: #000;
+  font-size: 35px;
+  font-weight: bold; 
+}
+
+
+.login__field {
+  padding: 20px 0px;	
+  position: relative;	
+  
+}
+
+.login__icon {
+  position: absolute;
+  top: 30px;
+  color: rgb(31, 2, 87); 
+}
+
+.login__input {
+  border: none;
+  border-bottom: 2px solid #D1D1D4;
+  background: none;
+  padding: 10px;
+  padding-left: 24px;
+  font-weight: 500;
+  width: 75%;
+  transition: .2s;
+  font-size: 16px;     
+}
+
+.login__input:active,
+.login__input:focus,
+.login__input:hover {
+  outline: none;
+  border-bottom-color: #6A679E;
+}
+
+/* Add Zoom Animation */
+.animate {
+  -webkit-animation: animatezoom 0.6s;
+  animation: animatezoom 0.6s
+}
+
+@-webkit-keyframes animatezoom {
+  from {-webkit-transform: scale(0)} 
+  to {-webkit-transform: scale(1)}
+}
+  
+@keyframes animatezoom {
+  from {transform: scale(0)} 
+  to {transform: scale(1)}
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+  span.psw {
+      display: block;
+      float: none;
+  }
+}

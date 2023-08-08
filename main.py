@@ -125,4 +125,4 @@ async def sign_up(request: Request):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="localhost", port=8003)
+    uvicorn.run(app, host="localhost", port=8003,ssl_keyfile="localhost.key", ssl_certfile="localhost.crt")

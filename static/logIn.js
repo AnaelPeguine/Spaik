@@ -15,26 +15,31 @@ loginForm.addEventListener('submit', submitLogInForm);
 async function submitLogInForm(event) {
   event.preventDefault();
 
-  const formData = new URLSearchParams(new FormData(event.target));
-
+  const formData = {
+    username: document.getElementById('username').value,
+    password: document.getElementById('password').value
+  };
   const response = await fetch('/token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: formData,
+    body: JSON.stringify(formData),
   });
 
-  if (response.ok) {
-    const data = await response.json();
-    console.log('Logged in:', data);
-    document.getElementById('logInButton').innerHTML = `<a href="#user">${data.username}</a>`;
-    signInButton.style.display = "none";
+  const result = await response.json();
+  const passwordError = document.getElementById('passwordError');
+  
+  if (result.error) {
+    passwordError.textContent = result.error;
+    console.log(result.error)
+  }else {
+    document.getElementById('signInButton').innerHTML = `<a href="#user">${formData.username}</a>`;
     modal.style.display = "none";
+    window.isLoggedIn = true;
+    logInButton.innerHTML = `<a href="/static/history.html">History</a>`;
 
-    // Other code to update the button and close the modal
-  } else {
-    // Handle failure, e.g., display an error message
-    console.log("error");
+    window.loggedInUsername = formData.username;
+    localStorage.setItem('loggedInUsername', formData.username);
   }
 }

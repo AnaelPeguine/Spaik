@@ -103,13 +103,18 @@ def authenticate_user(db, username: str, password: str):
     if not verify_password(password, user[1]):
         return False
     
-    return user
+    return True 
 
 def create_user(db, username: str, password: str):
-
     cursor = db.cursor()
-    cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, get_password_hash(password)))
-    db.commit()
+    try:
+        cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, get_password_hash(password)))
+        db.commit()
+    except sqlite3.IntegrityError:
+        raise ValueError("Username already exists.")
+    finally:
+        cursor.close()
+
     
 def validate_password(password: str) -> bool:
 
@@ -121,22 +126,24 @@ def validate_password(password: str) -> bool:
     return True
 
 @app.post("/token")
-def login(form_data: OAuth2PasswordRequestForm = Depends()):
-
-    try:
-        with sqlite3.connect("spaikDB.db") as conn:
-
-            user = authenticate_user(conn, form_data.username, form_data.password)
+async def login(request: Request):
+    data = await request.json()
+    username = data.get('username') 
+    password = data.get('password')
+    with sqlite3.connect("spaikDB.db") as conn:
+        try:
+            user = authenticate_user(conn,username, password)
 
             if not user:
-                raise HTTPException(status_code=401, detail="Incorrect username or password")
+                return {"error": "Invalid UserName or Password"}
             
             return {"access_token": user[2], "token_type": "bearer", "username": user[0]}  
         
-    except Exception as e:
+        except Exception as e:
 
-        print(f"Exception occurred: {str(e)}") 
-        raise HTTPException(status_code=500, detail=str(e))  
+            print(f"Exception occurred: {str(e)}") 
+            raise HTTPException(status_code=500, detail=str(e)) 
+   
 
 
 @app.post("/signup")
@@ -151,14 +158,41 @@ async def sign_up(request: Request):
         return {"error": "Password must be at least 8 characters long and include at least one digit."}
     
     with sqlite3.connect("spaikDB.db") as conn:
-
-        create_user(conn, username, password)
-        
+        try:
+            create_user(conn, username, password)
+        except ValueError as e:
+            return {"error": "Username already exists"}
     return {"message": "User created successfully"}
 
+@app.post("/save-improved-text")
+async def save_improved_text(request: Request):
+    data = await request.json()
+    username = data.get('username')  # assuming you'll send the username
+    improvedText = data.get('improvedText')
+    text = data.get('text')
+    with sqlite3.connect("spaikDB.db") as conn:
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO user_texts (username, text_data, improved_Text) VALUES (?, ?, ?)", (username, text, improvedText))
+        conn.commit()
+    
+    return {"message": "Text saved successfully"}
+
+@app.post("/get-history")
+async def get_history(request: Request):
+    data = await request.json()
+    username = data.get('username')
+    print(f"Received username: {username}")
+
+
+    with sqlite3.connect("spaikDB.db") as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT text_data, improved_Text FROM user_texts WHERE username = ?", (username,))
+        data = cursor.fetchall()
+
+    return {"history": data}
 
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="localhost", port=8015)
+    uvicorn.run(app, host="localhost", port=8010)
 

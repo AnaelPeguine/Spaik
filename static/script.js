@@ -98,6 +98,62 @@ function translateAudio(formData) {
   return makeApiRequest('/translateaudio/', formData);
 }
 
+function saveImprovedTextToDB(improvedText) {
+  const username = window.loggedInUsername;  // Get this dynamically based on who's logged in
+
+  fetch('/save-improved-text', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ 
+        "username": username,
+        "text_data": improvedText
+      })
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+  })
+  .then(data => {
+      console.log(data.message);
+  })
+  .catch(error => {
+      console.error('Error saving improved text:', error);
+  });
+}
+
+function saveImprovedTextToDB(improvedText, text) {
+  const username = window.loggedInUsername;  
+
+  fetch('/save-improved-text', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ 
+        "username": username,
+        "improvedText": improvedText,
+        "text": text
+
+      })
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+  })
+  .then(data => {
+      console.log(data.message);
+  })
+  .catch(error => {
+      console.error('Error saving improved text:', error);
+  });
+}
+
 function improveText(success) {
 
   console.log(success);
@@ -125,6 +181,9 @@ function improveText(success) {
   .then(data => {
 
     improvedTextElement.textContent = "";
+    if (window.isLoggedIn) {
+      saveImprovedTextToDB(data[0], success);  
+    }
     const sentences = data[0].match(/[^\.!\?]+[\.!\?]+/g);
     speakSentences(sentences);
     hideLoader(); // Hide the loader before invoking the speakSentences function

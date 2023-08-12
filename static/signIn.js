@@ -22,23 +22,24 @@ async function submitForm(event) {
     const passwordError = document.getElementById('passwordErrorSignIn');
 
     if (result.error) {
+
       passwordError.textContent = result.error;
       console.log(result.error)
 
     } else {
-        // Update the button text to the user's username
+
         document.getElementById('signInButton').innerHTML = `<a href="#user">${formData.username}</a>`;
-        // Remove the onclick attribute to make it unclickable
+        window.loggedInUsername = formData.username;
+        localStorage.setItem('loggedInUsername', formData.username);
         signInButton.removeAttribute('onclick');
-        // Change the cursor style to "default"
         signInButton.style.cursor = 'default';
-        // Remove any hover effect by setting the styles directly
-        signInButton.style.backgroundColor = 'inherit'; // Replace with the actual normal background color if needed
-        signInButton.style.color = 'inherit'; // Replace with the actual normal text color if needed
-        // Disable pointer events (including hover)
+        signInButton.style.backgroundColor = 'inherit'; 
+        signInButton.style.color = 'inherit'; 
         signInButton.style.pointerEvents = 'none';
-        logInButton.style.display = "none";
+        logInButton.innerHTML = `<a href="/static/history.html">History</a>`;
         signInModal.style.display = "none";
+        window.isLoggedIn = true;
+        
     }
 
 } 

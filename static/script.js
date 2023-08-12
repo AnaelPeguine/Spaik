@@ -10,6 +10,7 @@ let improvedTextElement = document.getElementById('improvedText');
 
 navigator.mediaDevices.getUserMedia(audioIN)
 .then(function (stream) {
+
   mediaStreamObj = stream;
   let options = { audioBitsPerSecond: 128000 }
   mediaRecorder = new MediaRecorder(mediaStreamObj, options);
@@ -23,6 +24,7 @@ navigator.mediaDevices.getUserMedia(audioIN)
       icon.className = "fas fa-microphone";
 
     } else {
+
       isRecording = true;
       mediaRecorder.start();
       console.log('Recording');
@@ -45,142 +47,179 @@ navigator.mediaDevices.getUserMedia(audioIN)
 function handleDataAvailable(ev) {
 
   dataArray.push(ev.data);
-  console.log('push')
-  console.log(ev.data)
-  improvedTextElement.classList.remove('visible'); // hide the element
+  improvedTextElement.classList.remove('visible');
 
 }
 
 function stopRecording(ev) {
-  console.log(dataArray.length);
-
-  let audioData = new Blob(dataArray, { type: "audio/mp3" });
-
+  
+  const audioDataBlob = new Blob(dataArray, { type: "audio/mp3" });
   dataArray = [];
-  let formData = new FormData();
-  formData.append('audio', audioData, 'audio2.mp3');
+  const formData = new FormData();
+  formData.append('audio', audioDataBlob, 'audio2.mp3');
 
   uploadAudio(formData)
-    .then(data => translateAudio(formData))
-    .then(data => improveText(data))
-    .catch(error => console.error('Error:', error));
+      .then(uploadResponse => translateAudio(formData))
+      .then(translationResponse => improveText(translationResponse))
+      .catch(error => console.error('Error:', error.message));
+
+}
+
+function makeApiRequest(url, formData) {
+  return fetch(url, {
+      method: 'POST',
+      body: formData
+  })
+  .then(response => {
+
+      if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+      }
+
+      console.log(`apirequest`);
+
+      return response.json();
+
+  });
 }
 
 function uploadAudio(formData) {
-  return fetch('/uploadaudio/', {
-    method: 'POST',
-    body: formData
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.json();
-  });
+
+  console.log(`Uploading audio`);
+
+  return makeApiRequest('/uploadaudio/', formData);
+
 }
 
 function translateAudio(formData) {
-  return fetch('/translateaudio/', {
-    method: 'POST',
-    body: formData
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.json();
-  });
+  return makeApiRequest('/translateaudio/', formData);
 }
 
 function improveText(success) {
+
   console.log(success);
-  console.log(document.getElementById('selected-value').innerText);
+  const improvedTextElement = document.querySelector("#improvedText"); 
 
   fetch('/improver/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ "content": success, "scenario":document.getElementById('selected-value').innerText })
+    body: JSON.stringify({ 
+      "content": success, 
+      "scenario": document.getElementById('selected-value').innerText 
+    })
   })
   .then(response => {
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
+
     return response.json();
+
   })
   .then(data => {
-    improvedTextElement.textContent = "";  // Clear the content
 
-    // split text into sentences
-    let sentences = data[0].match(/[^\.!\?]+[\.!\?]+/g);
-  
-    let voices = window.speechSynthesis.getVoices();
-    let selectedVoice = voices.find(voice => voice.name.toLowerCase().includes('female') || voice.name.toLowerCase().includes('woman') || voice.name.toLowerCase().includes('girl'));
-  
-    // if voices aren't loaded yet
-    if (!voices.length) {
-      window.speechSynthesis.onvoiceschanged = function () {
-        voices = window.speechSynthesis.getVoices();
-        selectedVoice = voices.find(voice => voice.name.toLowerCase().includes('female') || voice.name.toLowerCase().includes('woman') || voice.name.toLowerCase().includes('girl'));
-        processVoices(sentences, selectedVoice);
-      }
-    } else {
-      processVoices(sentences, selectedVoice);
-    }
-  
-    function processVoices(sentences, selectedVoice) {
-      if (!selectedVoice) {
-        console.log('No female voice found');
-        return;
-      }
-      // create and speak utterances
-      let utterance;
-      let index = 0;
-  
-      function speakNextUtterance() {
-        if (index < sentences.length) {
-            utterance = new SpeechSynthesisUtterance(sentences[index]);
-            utterance.voice = selectedVoice;
-    
-            window.speechSynthesis.speak(utterance);
-    
-            if (index == 0) {
-                improvedTextElement.classList.add('visible'); // make it visible at the start of the first sentence
-            }
-    
-            typewriterEffect(improvedTextElement, sentences[index], 70) // apply typewriter effect
-                .then(() => {
-                    index++;
-                    speakNextUtterance(); // call the next utterance recursively
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-    }
-    
-  
-      speakNextUtterance();
-    }
-  
+    improvedTextElement.textContent = "";
+    const sentences = data[0].match(/[^\.!\?]+[\.!\?]+/g);
+    speakSentences(sentences);
+
   })
   .catch(error => {
     console.error('Error:', error);
   });
 }
 
+function getFemaleVoice() {
+
+  const voices = window.speechSynthesis.getVoices();
+  const femaleIdentifiers = ['female', 'woman', 'girl'];
+
+  return voices.find(voice => femaleIdentifiers.some(id => voice.name.toLowerCase().includes(id)));
+
+}
+
+function speakSentences(sentences) {
+
+  const improvedTextElement = document.querySelector("#improvedText"); 
+  let selectedVoice = getFemaleVoice();
+
+  if (!selectedVoice) {
+
+    if (!window.speechSynthesis.onvoiceschanged) {
+
+      window.speechSynthesis.onvoiceschanged = function () {
+
+        selectedVoice = getFemaleVoice();
+        processVoices(sentences, selectedVoice);
+
+      }
+
+    }
+
+  } else {
+    processVoices(sentences, selectedVoice);
+  }
+
+}
+
+function processVoices(sentences, selectedVoice) {
+
+  if (!selectedVoice) {
+
+    console.log('No female voice found');
+    return;
+
+  }
+
+  let utterance;
+  let index = 0;
+  const improvedTextElement = document.querySelector("#improvedText"); 
+
+  function speakNextUtterance() {
+
+    if (index < sentences.length) {
+
+      utterance = new SpeechSynthesisUtterance(sentences[index]);
+      utterance.voice = selectedVoice;
+      window.speechSynthesis.speak(utterance);
+
+      if (index == 0) {
+        improvedTextElement.classList.add('visible');
+      }
+
+      typewriterEffect(improvedTextElement, sentences[index], 70)
+        .then(() => {
+          index++;
+          speakNextUtterance();
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+
+  }
+  
+  speakNextUtterance();
+}
+
+
 document.addEventListener('DOMContentLoaded', (event) => {
+
   const radioButtons = document.querySelectorAll('input[type="radio"]');
   const optionsViewButton = document.getElementById('options-view-button');
 
   radioButtons.forEach(function(radioButton) {
+
     radioButton.onclick = function() {
       const labelElement = radioButton.nextElementSibling.nextElementSibling.nextElementSibling
       document.getElementById('selected-value').innerText = labelElement.innerText;
-      optionsViewButton.checked = false; // Close the options view
+      optionsViewButton.checked = false; 
     }
+
   });
+
 });
 
 
@@ -190,16 +229,25 @@ function typewriterEffect(elem, text, delay) {
 let i = 0;
 
 return new Promise((resolve, reject) => {
+  
   let interval = setInterval(function () {
+
     if (i < text.length) {
+
       elem.textContent += text.charAt(i);
       i++;
+
     } else {
+
       clearInterval(interval);
       resolve();
+
     }
+
   }, delay);
+
 });
+
 }
 
 

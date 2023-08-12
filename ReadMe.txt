@@ -1,4 +1,4 @@
-﻿Spaik        
+Spaik        
                                         
 * A product that lets users who are not English native speakers to enhance
                                                                 
@@ -26,6 +26,7 @@ Prerequisites
    * sqlite3
    * shutil
    * pydantic
+	*pydub
 
 
 Usage

@@ -1,1 +1,9 @@
-fastapi
+
+fastapi 
+uvicorn 
+openAI
+sqlite3
+shutil
+pydanticfastapi
+pydub
+passlib

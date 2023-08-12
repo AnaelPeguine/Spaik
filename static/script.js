@@ -52,7 +52,8 @@ function handleDataAvailable(ev) {
 }
 
 function stopRecording(ev) {
-  
+  showLoader(); // Display the loader immediately after the recording stops
+  console.log("show loader")
   const audioDataBlob = new Blob(dataArray, { type: "audio/mp3" });
   dataArray = [];
   const formData = new FormData();
@@ -61,8 +62,10 @@ function stopRecording(ev) {
   uploadAudio(formData)
       .then(uploadResponse => translateAudio(formData))
       .then(translationResponse => improveText(translationResponse))
-      .catch(error => console.error('Error:', error.message));
-
+      .catch(error => {
+          hideLoader(); // Ensure the loader is hidden in case of any errors
+          console.error('Error:', error.message);
+      });
 }
 
 function makeApiRequest(url, formData) {
@@ -124,11 +127,27 @@ function improveText(success) {
     improvedTextElement.textContent = "";
     const sentences = data[0].match(/[^\.!\?]+[\.!\?]+/g);
     speakSentences(sentences);
+    hideLoader(); // Hide the loader before invoking the speakSentences function
+
 
   })
   .catch(error => {
     console.error('Error:', error);
   });
+}
+
+function showLoader() {
+
+  const iconElement = document.getElementById('icon');
+  iconElement.className = 'fas fa-spinner fa-spin';
+
+}
+
+function hideLoader() {
+
+  const iconElement = document.getElementById('icon');
+  iconElement.className = 'fas fa-microphone';
+
 }
 
 function getFemaleVoice() {

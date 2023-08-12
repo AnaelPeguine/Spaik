@@ -125,12 +125,16 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
 
     try:
         with sqlite3.connect("spaikDB.db") as conn:
+
             user = authenticate_user(conn, form_data.username, form_data.password)
+
             if not user:
                 raise HTTPException(status_code=401, detail="Incorrect username or password")
+            
             return {"access_token": user[2], "token_type": "bearer", "username": user[0]}  
         
     except Exception as e:
+
         print(f"Exception occurred: {str(e)}") 
         raise HTTPException(status_code=500, detail=str(e))  
 
@@ -143,9 +147,11 @@ async def sign_up(request: Request):
     password = data.get('password')
 
     if not validate_password(password):
+
         return {"error": "Password must be at least 8 characters long and include at least one digit."}
     
     with sqlite3.connect("spaikDB.db") as conn:
+
         create_user(conn, username, password)
         
     return {"message": "User created successfully"}
@@ -154,5 +160,5 @@ async def sign_up(request: Request):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="localhost", port=8012)
+    uvicorn.run(app, host="localhost", port=8015)
 

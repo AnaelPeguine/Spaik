@@ -600,6 +600,12 @@ input[type="radio"] {
   
 }
 
+#icon {
+  color: #fff;        /* Sets the icon color to white */
+  font-size: 24px;    /* Makes the icon larger */
+  vertical-align: middle; /* Can help align the icon in relation to surrounding elements */
+}
+
 .login__icon {
   position: absolute;
   top: 30px;
